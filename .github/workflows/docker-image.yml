@@ -16,4 +16,27 @@ jobs:
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Build the Docker image
-      run: docker build ${{ github.event.inputs.project_name }} --file ${{ github.event.inputs.project_name }}/Dockerfile --tag ${{ github.event.inputs.project_name }}:${{ steps.vars.outputs.sha_short }}
+      env:
+        IMAGE_NAME: ${{ github.event.inputs.project_name }}
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+        PROJECT_NAME: ${{ github.event.inputs.project_name }}
+      run: docker build $PROJECT_NAME --file $PROJECT_NAME/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG
+    - name: dockerhublogin
+      env:
+        DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+        DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      run: docker login --username $DOCKERHUB_USER --password $DOCKERHUB_ACCESS_TOKEN
+    - name: tag
+      env:
+        DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+        IMAGE_NAME: ${{ github.event.inputs.project_name }}
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+      run: docker tag $IMAGE_NAME:$IMAGE_TAG $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG
+    - name: push
+      env:
+        DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+        IMAGE_NAME: ${{ github.event.inputs.project_name }}
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+      run: docker push $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG
+
+
