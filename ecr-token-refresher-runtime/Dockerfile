@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-RUN apt-get update && apt-get install curl jq unzip python3 -y
+RUN apt-get update && apt-get install curl jq unzip python3 python3.8-venv -y
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 RUN unzip awscli-bundle.zip
