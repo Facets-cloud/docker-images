@@ -22,10 +22,10 @@ jobs:
         PROJECT_NAME: ${{ github.event.inputs.project_name }}
       run: docker build $PROJECT_NAME --file $PROJECT_NAME/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG
     - name: dockerhublogin
-      env:
-        DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
-        DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      run: echo $DOCKERHUB_ACCESS_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
     - name: tag
       env:
         DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
