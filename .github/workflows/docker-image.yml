@@ -25,7 +25,7 @@ jobs:
       env:
         DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
         DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      run: docker login --username $DOCKERHUB_USER --password $DOCKERHUB_ACCESS_TOKEN
+      run: echo $DOCKERHUB_ACCESS_TOKEN | docker login --username foo --password-stdin
     - name: tag
       env:
         DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
